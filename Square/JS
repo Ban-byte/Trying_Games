@@ -1,0 +1,60 @@
+// ======= Variáveis do jogo =======
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+let player = { x: 200, y: 200, size: 20 };
+let dirX = 0;
+let dirY = 0;
+
+// ======= Função de movimento =======
+function setDirection(x, y) {
+  dirX = x;
+  dirY = y;
+}
+
+function update() {
+  player.x += dirX * 2;
+  player.y += dirY * 2;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "white";
+  ctx.fillRect(player.x, player.y, player.size, player.size);
+
+  requestAnimationFrame(update);
+}
+
+update();
+
+// ======= Controles de teclado =======
+document.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowUp") setDirection(0, -1);
+  if (e.key === "ArrowDown") setDirection(0, 1);
+  if (e.key === "ArrowLeft") setDirection(-1, 0);
+  if (e.key === "ArrowRight") setDirection(1, 0);
+});
+
+// ======= Botões de toque / mouse / pointer =======
+const padUp = document.getElementById("pad-up");
+const padDown = document.getElementById("pad-down");
+const padLeft = document.getElementById("pad-left");
+const padRight = document.getElementById("pad-right");
+
+function addPadListener(el, x, y) {
+  const handler = (e) => {
+    if (e.cancelable) e.preventDefault();
+    setDirection(x, y);
+  };
+
+  el.addEventListener("pointerdown", handler);
+  el.addEventListener("touchstart", handler, { passive: false });
+  el.addEventListener("mousedown", handler);
+  el.addEventListener("click", handler);
+
+  el.style.userSelect = "none";
+  el.style.touchAction = "manipulation";
+}
+
+addPadListener(padUp, 0, -1);
+addPadListener(padDown, 0, 1);
+addPadListener(padLeft, -1, 0);
+addPadListener(padRight, 1, 0);
